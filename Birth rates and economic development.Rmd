@@ -1,0 +1,51 @@
+---
+title: "Untitled"
+author: "AyşegülBinbaş"
+date: "19 05 2022"
+output: word_document
+---
+
+#Birth rates and economic development for 30 Nations
+```{r}
+
+
+#To open file in R:
+
+Data_birthrate=read.delim("birthrate.txt", header = F,sep="")
+
+colnames(Data_birthrate) =c("nat","birth.r","inc","farm","mort")  # to change colum names
+sum(is.na(Data_birthrate)) #to check is there any na value or not
+dim(Data_birthrate)
+str(Data_birthrate)
+library(tidyverse)
+library(caret)
+Data_birthrate$nat <- as.factor(Data_birthrate$nat) # to convert nat to factor 
+#to divide the data set in to test and train :
+
+set.seed(123) 
+#In order to define training control for cross-validation (K equal to 5) 
+train_control1<- trainControl(method = "cv",number = 5)
+
+#In model fit1, birh rate is response and the others independent variables.
+summary(Data_birthrate)
+#fitk <- train(birth.r ~ ., data = Data_birthrate, method = "lm",trControl = train_control1)
+
+fit1 <- train(birth.r ~ inc + farm + mort, data = Data_birthrate, method = "lm",trControl = train_control1)
+# printing model performance metrics along with other details
+print(fit1)
+summary(fit1)
+
+
+#view final model
+fit1$finalModel
+
+#to view the model predictions made for each fold:
+#view predictions for each fold
+fit1$resample
+
+#As can be seen from the result that while Fold3 has the min RMSE result that is  4.68,(hence, MSE is  4.68^2),fold4 has max RMSE value that is 11.07(MSE is 11.07^2)
+
+
+
+```
+
